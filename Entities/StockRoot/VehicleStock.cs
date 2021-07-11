@@ -9,6 +9,7 @@ namespace CMS.Systems.StockManagement.Entities.StockRoot
         //Compulsoy fields
         public string RegistrationNumber { get; set; }
         public string VinNumber { get; set; }
+        public string UserName { get; set; }
         public string Manufacturer { get; set; }
         public string ModelDescription { get; set; }
         public DateTime? ModelYear { get; set; }

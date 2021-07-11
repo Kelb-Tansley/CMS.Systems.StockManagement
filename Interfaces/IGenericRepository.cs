@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace CMS.Systems.StockManagement.Interfaces
 {
@@ -6,7 +10,9 @@ namespace CMS.Systems.StockManagement.Interfaces
     {
         void Add(T entity);
         void Remove(T entity);
-        IAsyncEnumerable<T> GetAllAsync(bool shouldTrackChanges = true);
-        int SaveChanges();
+
+        Task<IList<T>> GetAsync(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "");
+
+        Task<List<T>> GetAllAsync(bool shouldTrackChanges = true);
     }
 }

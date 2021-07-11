@@ -1,11 +1,11 @@
 using CMS.Systems.StockManagement.Data;
+using CMS.Systems.StockManagement.Data.UnitOfWork;
+using CMS.Systems.StockManagement.Interfaces;
 using CMS.Systems.StockManagement.Models;
+using CMS.Systems.StockManagement.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -45,8 +45,18 @@ namespace CMS.Systems.StockManagement
             {
                 configuration.RootPath = "ClientApp/dist";
             });
-        }
 
+            AddUnitOfWork(services);
+            AddServices(services);
+        }
+        private void AddUnitOfWork(IServiceCollection services)
+        {
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+        }
+        private void AddServices(IServiceCollection services)
+        {
+            services.AddTransient<IVehicleStockService, VehicleStockService>();
+        }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

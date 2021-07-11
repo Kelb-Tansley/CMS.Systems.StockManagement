@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatSort } from '@angular/material/sort';
 import { VehicleStockItem } from '../models/vehicleStockItem';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-stock',
@@ -16,6 +17,14 @@ export class StockComponent implements OnInit {
   dataSource: MatTableDataSource<VehicleStockItem>;
   selection = new SelectionModel<VehicleStockItem>(true, []);
   selectedItem: VehicleStockItem;
+  vehicleStockData: VehicleStockItem[];
+  http: HttpClient;
+  baseUrl: string;
+
+  constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
+    this.http = http;
+    this.baseUrl = baseUrl
+  }
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
@@ -42,10 +51,15 @@ export class StockComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
 
-  ngOnInit() {
+  async ngOnInit() {
     this.dataSource = new MatTableDataSource<VehicleStockItem>(ELEMENT_DATA);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+
+    let endPoint = this.baseUrl + 'vehiclestock';
+    await this.http.get<VehicleStockItem[]>(endPoint).subscribe(result => {
+      this.vehicleStockData = result;
+    }, error => console.error(error));
   }
 
   applyFilter(filterEvent: Event) {

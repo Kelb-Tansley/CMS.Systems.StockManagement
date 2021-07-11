@@ -33,6 +33,8 @@ namespace CMS.Systems.StockManagement.Data
             EntityConfigurationHelper.ConfigureEntityBase<VehicleStockImage>(builder);
 
             EntityConfigurationHelper.ConfigureManyKeyBase<VehicleStockAccessory>(builder);
+            builder.Entity<VehicleStockAccessory>()
+                .HasKey(c => new { c.AccessoryId, c.VehicleStockId });
         }
         public override int SaveChanges()
         {
