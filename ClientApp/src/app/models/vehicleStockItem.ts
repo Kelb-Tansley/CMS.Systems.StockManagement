@@ -1,20 +1,21 @@
-import { VehicleStockAccessory } from "./vehicleStockAccessory";
+import { Accessory } from "./accessory";
 import { VehicleStockImage } from "./vehicleStockImage";
 
 export interface VehicleStockItem {
   id: number;
+  isDeleted: boolean;
+  createdDate: string;
+  modifiedDate: string;
   registrationNumber: string;
+  vinNumber: string;
+  createdBy: string;
   manufacturer: string;
   modelDescription: string;
   modelYear: number;
   currentKilometreReading: number;
   colour: string;
-  vinNumber: string;
   retailPrice: number;
   costPrice: number;
-  createdDate: string;
-  createdBy: string,
-  modifiedDate: string;
-  accessories: Array<VehicleStockAccessory>;
-  images: Array<VehicleStockImage>;
+  accessories: Accessory[];
+  images: VehicleStockImage[];
 }

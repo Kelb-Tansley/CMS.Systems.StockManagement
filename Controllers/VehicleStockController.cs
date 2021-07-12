@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CMS.Systems.StockManagement.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("[controller]")]
     public class VehicleStockController : ControllerBase
@@ -24,9 +24,14 @@ namespace CMS.Systems.StockManagement.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<VehicleStock>> Get()
+        public IEnumerable<VehicleStock> Get()
         {
-            return await _vehicleStockService.GetAllVehiclesAsync();
+            return _vehicleStockService.GetAllVehiclesAsync();
         }
+        //[HttpPost]
+        //public async Task<IEnumerable<VehicleStock>> Post()
+        //{
+        //    return await _vehicleStockService.GetAllVehiclesAsync();
+        //}
     }
 }

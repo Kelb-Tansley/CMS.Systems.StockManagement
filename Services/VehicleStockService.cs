@@ -14,14 +14,15 @@ namespace CMS.Systems.StockManagement.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<IList<VehicleStock>> GetAllVehiclesAsync()
+        public IEnumerable<VehicleStock> GetAllVehiclesAsync()
         {
-            return await _unitOfWork.VehicleStockRepository.GetAllAsync();
+            //var collection = await _unitOfWork.VehicleStockRepository.GetAllAsync();
+            return VehicleStock.GetTestData();
         }
 
         public async Task<IList<VehicleStock>> GetAllVehiclesByUserNameAsync(string userName)
         {
-            return await _unitOfWork.VehicleStockRepository.GetAsync(vsr=> !vsr.IsDeleted && EF.Functions.Like(userName,vsr.UserName));
+            return await _unitOfWork.VehicleStockRepository.GetAsync(vsr=> !vsr.IsDeleted && EF.Functions.Like(userName,vsr.CreatedBy));
         }
     }
 }

@@ -1,9 +1,85 @@
-<p>stock-details works! {{ stockItem }}</p>
+<h4>Edit Stock Details</h4>
 
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-3 col-md-4">{{ stockItem.id }}</div>
-        <div class="col-sm-3 col-md-3">Random Content</div>
-        <div class="col-sm-3 col-md-3">Right Side Menu</div>
+  <div class="row">
+    <div class="col-sm-8 col-md-6">
+      <form class="details-form">
+        <div class="row">
+          <mat-form-field class="form-full-width">
+            <input matInput placeholder="Registration Number" value="Reg. Number">
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field class="form-full-width">
+            <input matInput placeholder="Vehicle Identification Number" value="VIN Number">
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field class="form-full-width">
+            <input matInput placeholder="Manufacturer" value="Manufacturer">
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field class="form-full-width">
+            <input matInput placeholder="Model Description" value="ModelDescription">
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field class="form-full-width">
+            <input matInput placeholder="Model Year" value="2021">
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field class="form-full-width">
+            <input matInput placeholder="Current Kilometre Reading" value="125637">
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field class="form-full-width">
+            <input matInput placeholder="Colour" value="Red">
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field class="form-full-width">
+            <input matInput placeholder="Retail Price" value="1000">
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field class="form-full-width">
+            <input matInput placeholder="Cost Price" value="1000">
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field class="form-full-width">
+            <mat-label>Accessories</mat-label>
+            <mat-select [formControl]="toppings" multiple>
+              <mat-option *ngFor="let topping of toppingList" [value]="topping">{{topping}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </form>
     </div>
+    <div class="col-sm-4 col-md-6">
+      <form [formGroup]="uploadForm" (ngSubmit)="submit()">
+        <div class="row">
+          <mat-label>Image Selection:</mat-label>
+        </div>
+
+        <div class="row">
+          <!-- Select File -->
+          <input matInput type="file" accept="image/*" (change)="showPreview($event)" />
+        </div>
+
+        <!-- Image Preview -->
+        <div class="imagePreview" *ngIf="imageURL && imageURL !== ''">
+          <img [src]="imageURL" [alt]="uploadForm.value.name" />
+        </div>
+
+        <!-- Assign Image Alt -->
+        <input formControlName="name" placeholder="Enter Image Name" />
+
+        <button mat-button type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
 </div>
