@@ -36,3 +36,22 @@ label.mat-checkbox-layout {
   width: 100%;
   margin: 0px;
 }
+
+.drawer-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.example-sidenav-content {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.example-sidenav {
+  padding: 8px;
+}

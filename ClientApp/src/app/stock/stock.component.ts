@@ -6,6 +6,7 @@ import { MatSort } from '@angular/material/sort';
 import { VehicleStockItem } from '../models/vehicleStockItem';
 import { HttpClient } from '@angular/common/http';
 import { Subscription } from "rxjs";
+import { EmitEvent, EventBusService, Events } from '../services/event-bus.service';
 
 @Component({
   selector: 'app-stock',
@@ -14,48 +15,33 @@ import { Subscription } from "rxjs";
 })
 
 export class StockComponent implements OnInit, OnDestroy {
+  //#region Private Fields'
+  http: HttpClient;
+  baseUrl: string;
+  showFiller = false;
+
   displayedColumns: string[] = ['select', 'id', 'registrationNumber', 'manufacturer', 'modelDescription', 'modelYear', 'edit'];
   dataSource: MatTableDataSource<VehicleStockItem>;
   selection = new SelectionModel<VehicleStockItem>(true, []);
-  selectedItem: VehicleStockItem;
+  selectedItem: VehicleStockItem = new VehicleStockItem();
   vehicleStockData: VehicleStockItem[];
-  http: HttpClient;
-  baseUrl: string;
   paramsSubscription: Subscription;
 
-  constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  //#endregion
+
+  //#region Constructor
+  constructor(private eventbus: EventBusService, http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
     this.http = http;
     this.baseUrl = baseUrl
   }
 
-  /** Whether the number of selected elements matches the total number of rows. */
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
-  }
-
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
-  masterToggle() {
-    this.isAllSelected() ?
-      this.selection.clear() :
-      this.dataSource.data.forEach(row => this.selection.select(row));
-  }
-
-  /** The label for the checkbox on the passed row */
-  checkboxLabel(row?: VehicleStockItem): string {
-    if (!row) {
-      return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
-    }
-    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
-  }
-
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
-
-  async ngOnInit() {
+  ngOnInit() {
     let endPoint = this.baseUrl + 'vehiclestock';
-    this.paramsSubscription = await this.http.get<VehicleStockItem[]>(endPoint).subscribe(result => {
+    this.selectedItem = new VehicleStockItem();
+
+    this.paramsSubscription = this.http.get<VehicleStockItem[]>(endPoint).subscribe(result => {
       this.vehicleStockData = result;
       this.dataSource = new MatTableDataSource<VehicleStockItem>(this.vehicleStockData);
       //this.dataSource = new MatTableDataSource<VehicleStockItem>(ELEMENT_DATA);
@@ -67,11 +53,50 @@ export class StockComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.paramsSubscription.unsubscribe();
   }
+  //#endregion
+
+  //#region Methods'
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    if (this.dataSource) {
+      const numRows = this.dataSource.data.length;
+      return numSelected === numRows;
+    }
+    else {
+      return false;
+    }
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.dataSource.data.forEach(row => this.selection.select(row));
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(element?: VehicleStockItem): string {
+    if (!element) {
+      return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+    }
+    return `${this.selection.isSelected(element) ? 'deselect' : 'select'} row ${element.id + 1}`;
+  }
 
   applyFilter(filterEvent: Event) {
     const filterValue = (filterEvent.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
+
+  onAddStockDetailsCall() {
+    this.selectedItem = new VehicleStockItem();
+    this.eventbus.emit(new EmitEvent(Events.StockSelected, this.selectedItem));
+  }
+  onEditStockDetailsCall(element?: VehicleStockItem) {
+    this.selectedItem = element;
+    this.eventbus.emit(new EmitEvent(Events.StockSelected, this.selectedItem));
+  }
+  //#endregion
 }
 
 

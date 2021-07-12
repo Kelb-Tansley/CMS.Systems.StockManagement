@@ -1,7 +1,7 @@
 import { Accessory } from "./accessory";
 import { VehicleStockImage } from "./vehicleStockImage";
 
-export interface VehicleStockItem {
+export class VehicleStockItem {
   id: number;
   isDeleted: boolean;
   createdDate: string;

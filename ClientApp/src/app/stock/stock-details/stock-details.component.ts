@@ -1,68 +1,102 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { AuthorizeService } from 'src/api-authorization/authorize.service';
 import { VehicleStockItem } from 'src/app/models/vehicleStockItem';
-import { FormBuilder, FormGroup, FormControl } from "@angular/forms";
+import { FormBuilder, FormGroup, FormControl, Validators } from "@angular/forms";
+import { Accessory } from '../../models/accessory';
+import { EventBusService, Events } from 'src/app/services/event-bus.service';
 
 @Component({
   selector: 'app-stock-details',
   templateUrl: './stock-details.component.html',
   styleUrls: ['./stock-details.component.css']
 })
-export class StockDetailsComponent implements OnInit, OnDestroy {
-  paramsSubscription: Subscription;
-  // id: number;
-  stockItem: VehicleStockItem;
-  uploadForm: FormGroup;
-  imageURL: string;
-  toppings = new FormControl();
-  toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
 
-  constructor(private route: ActivatedRoute, private authorizeService: AuthorizeService, public fb: FormBuilder) {
-    this.uploadForm = this.fb.group({
-      avatar: [null],
-      name: ['']
-    });
+export class StockDetailsComponent implements OnInit, OnDestroy {
+  eventbusSubscription: Subscription;
+  paramsSubscription: Subscription;
+
+  stockItem: VehicleStockItem = new VehicleStockItem();
+  // uploadForm: FormGroup;
+  imageURL: string;
+
+  entry: FormControl = new FormControl('', [Validators.required]);
+
+  accessoriesList: Accessory[] = [
+    { name: 'Electric windows', description: '' },
+    { name: 'Power steering', description: '' },
+    { name: 'Central locking', description: '' },
+    { name: 'Cruise control', description: '' },
+    { name: 'Air conditioning', description: '' },
+    { name: 'Climate control', description: '' },
+    { name: 'CD Player', description: '' },
+    { name: 'Bluetooth connectivity', description: '' },
+    { name: 'USB Port', description: '' },
+    { name: 'Auxiliary Input', description: '' },
+    { name: 'Navigation', description: '' },
+    { name: 'Sunroof', description: '' }];
+
+
+  constructor(private eventbus: EventBusService, private authorizeService: AuthorizeService) {
+    // , public fb: FormBuilder
+    // this.uploadForm = this.fb.group({
+    //   avatar: [null],
+    //   name: ['']
+    // });
   }
 
   ngOnInit() {
-    this.stockItem = this.route.snapshot.params['id'];
-    this.paramsSubscription = this.route.params.subscribe(
-      (params: Params) => {
-        this.stockItem = params['id'];
-      }
-    );
+    //Use event bus to provide loosely coupled communication
+    this.eventbusSubscription = this.eventbus.on(Events.StockSelected, (stock => this.onStockSelectedEvent(stock)));
   }
 
-  // Image Preview
-  showPreview(event) {
-    const file = (event.target as HTMLInputElement).files[0];
-    this.uploadForm.patchValue({
-      avatar: file
-    });
-    this.uploadForm.get('avatar').updateValueAndValidity();
-
-    // File Preview
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imageURL = reader.result as string;
-    }
-    reader.readAsDataURL(file);
-  }
-
-  // Submit Form
-  submit() {
-    console.log(this.uploadForm.value);
+  OnSubmitDetails() {
+    console.log(this.stockItem);
   }
 
   ngOnDestroy() {
-    this.paramsSubscription.unsubscribe();
+    if (this.paramsSubscription) {
+      this.paramsSubscription.unsubscribe();
+    }
+    if (this.eventbusSubscription) {
+      this.eventbusSubscription.unsubscribe();
+    }
+  }
+  getErrorMessage() {
+    return this.entry.hasError('required') ? 'You must enter a value' :
+      '';
+
+    //async onSaveDetails() {
+    //  let userName = await this.authorizeService.getUser().pipe(map(u => u && u.name));
+    //  // this.stockItem.createdBy = userName.tostring();
+    //}
   }
 
-  //async onSaveDetails() {
-  //  let userName = await this.authorizeService.getUser().pipe(map(u => u && u.name));
-  //  // this.stockItem.createdBy = userName.tostring();
-  //}
+  onStockSelectedEvent(stock: VehicleStockItem) {
+    if (this.stockItem && stock) {
+      this.stockItem = stock;
+    }
+  }
+
+
+  // Submit Form
+  // submit() {
+  //   console.log(this.uploadForm.value);
+  // }
+
+  // Image Preview
+  // showPreview(event) {
+  //   const file = (event.target as HTMLInputElement).files[0];
+  //   this.uploadForm.patchValue({
+  //     avatar: file
+  //   });
+  //   this.uploadForm.get('avatar').updateValueAndValidity();
+
+  //   // File Preview
+  //   const reader = new FileReader();
+  //   reader.onload = () => {
+  //     this.imageURL = reader.result as string;
+  //   }
+  //   reader.readAsDataURL(file);
+  // }
 }
