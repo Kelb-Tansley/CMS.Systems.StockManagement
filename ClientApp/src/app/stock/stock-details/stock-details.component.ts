@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AuthorizeService } from 'src/api-authorization/authorize.service';
 import { VehicleStockItem } from 'src/app/models/vehicleStockItem';
-import { FormBuilder, FormGroup, FormControl, Validators } from "@angular/forms";
+import { FormBuilder, FormGroup, FormControl, Validators, NgForm } from "@angular/forms";
 import { Accessory } from '../../models/accessory';
-import { EventBusService, Events } from 'src/app/services/event-bus.service';
+import { EmitEvent, EventBusService, Events } from 'src/app/services/event-bus.service';
 
 @Component({
   selector: 'app-stock-details',
@@ -13,6 +13,7 @@ import { EventBusService, Events } from 'src/app/services/event-bus.service';
 })
 
 export class StockDetailsComponent implements OnInit, OnDestroy {
+  @ViewChild('stockDetailsForm', { static: true }) stockDetailForm: NgForm;
   eventbusSubscription: Subscription;
   paramsSubscription: Subscription;
 
@@ -76,6 +77,12 @@ export class StockDetailsComponent implements OnInit, OnDestroy {
     if (this.stockItem && stock) {
       this.stockItem = stock;
     }
+  }
+
+  onSubmit() {
+    console.log(this.stockDetailForm);
+    console.log(this.stockItem);
+    this.eventbus.emit(new EmitEvent(Events.StockSubmitted, this.stockItem));
   }
 
 

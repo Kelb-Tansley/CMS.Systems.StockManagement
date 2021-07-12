@@ -26,5 +26,6 @@ export class EmitEvent {
 }
 
 export enum Events {
-    StockSelected
+    StockSelected,
+    StockSubmitted
 }

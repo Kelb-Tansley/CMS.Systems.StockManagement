@@ -19,6 +19,9 @@ export class StockComponent implements OnInit, OnDestroy {
   http: HttpClient;
   baseUrl: string;
   showFiller = false;
+  isDrawerOpened = false;
+
+  eventbusSubscription: Subscription;
 
   displayedColumns: string[] = ['select', 'id', 'registrationNumber', 'manufacturer', 'modelDescription', 'modelYear', 'edit'];
   dataSource: MatTableDataSource<VehicleStockItem>;
@@ -41,6 +44,8 @@ export class StockComponent implements OnInit, OnDestroy {
     let endPoint = this.baseUrl + 'vehiclestock';
     this.selectedItem = new VehicleStockItem();
 
+    this.eventbusSubscription = this.eventbus.on(Events.StockSubmitted, (stock => this.onStockSubmittedEvent(stock)));
+
     this.paramsSubscription = this.http.get<VehicleStockItem[]>(endPoint).subscribe(result => {
       this.vehicleStockData = result;
       this.dataSource = new MatTableDataSource<VehicleStockItem>(this.vehicleStockData);
@@ -50,8 +55,19 @@ export class StockComponent implements OnInit, OnDestroy {
     }, error => console.error(error));
   }
 
+  onStockSubmittedEvent(stock: VehicleStockItem) {
+    if (stock && this.dataSource) {
+      this.dataSource.data.push(stock);
+      this.dataSource._updateChangeSubscription();
+      this.isDrawerOpened = false;
+    }
+  }
+
   ngOnDestroy() {
     this.paramsSubscription.unsubscribe();
+    if (this.eventbusSubscription) {
+      this.eventbusSubscription.unsubscribe();
+    }
   }
   //#endregion
 
@@ -95,6 +111,10 @@ export class StockComponent implements OnInit, OnDestroy {
   onEditStockDetailsCall(element?: VehicleStockItem) {
     this.selectedItem = element;
     this.eventbus.emit(new EmitEvent(Events.StockSelected, this.selectedItem));
+  }
+  onDeleteSelectedItems() {
+    this.selection.selected.forEach(function (value: VehicleStockItem) { value.isDeleted = true; });
+    //this.dataSource.data.splice();
   }
   //#endregion
 }

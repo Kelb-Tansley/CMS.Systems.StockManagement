@@ -1,11 +1,11 @@
 <div class="container-fluid">
-  <form class="details-form" (ngSubmit)="OnSubmitDetails()">
+  <form #stockDetailsForm="ngForm" class="details-form" (ngSubmit)="OnSubmitDetails(stockDetailsForm)">
     <div class="row details-form">
       <div class="col-sm-6">
         <h6>Edit Stock Details</h6>
       </div>
       <div class="col">
-        <button mat-button type="submit">SAVE</button>
+        <button mat-button type="submit" (click)="onSubmit()" [disabled]="!stockDetailsForm.valid">SUBMIT</button>
       </div>
       <div class="col">
         <button mat-button>DELETE</button>

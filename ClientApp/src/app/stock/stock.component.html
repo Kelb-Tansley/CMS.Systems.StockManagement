@@ -12,13 +12,11 @@
         <!-- Add Stock -->
         <div class="col-xs-4 col-md-3 col-lg-2 col-xxl-2">
           <button mat-button (click)="onAddStockDetailsCall()" (click)="drawer.toggle()">ADD NEW STOCK</button>
-          <!-- (click)="drawer.toggle()"  -->
-          <!-- [routerLink]="['/stock-details', selectedItem]" -->
         </div>
         <!-- Delete Selected -->
-        <!-- <div class="col-xs-4 col-md-3 col-lg-2 col-xxl-2">
-      <button class="float-end" mat-button (deleteSelectedItems())>DELETE</button>
-    </div> -->
+        <div class="col-xs-4 col-md-3 col-lg-2 col-xxl-2">
+          <button mat-raised-button (click)="onDeleteSelectedItems()">DELETE SELECTED</button>
+        </div>
       </div>
     </div>
     <div class="container-fluid">
@@ -69,13 +67,11 @@
 
               <ng-container matColumnDef="edit">
                 <th mat-header-cell *matHeaderCellDef style="width: 40px;"></th>
-                <!-- <td mat-cell *matCellDef="let element"> {{element.modelYear}} </td> -->
                 <td mat-cell *matCellDef="let element">
                   <button mat-button (click)="onEditStockDetailsCall(element)" (click)="drawer.toggle()">
                     <mat-icon>edit</mat-icon>
                   </button>
                 </td>
-                <!-- [routerLink]="['/stock-details', element]" -->
               </ng-container>
 
               <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
@@ -93,7 +89,7 @@
     </div>
   </div>
 
-  <mat-drawer #drawer class="example-sidenav" mode="over">
+  <mat-drawer #drawer class="example-sidenav" mode="over" [(opened)]="isDrawerOpened">
     <div class="container-fluid">
       <app-stock-details stock="selectedItem"></app-stock-details>
     </div>
