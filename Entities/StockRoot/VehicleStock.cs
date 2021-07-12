@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using CMS.Systems.StockManagement.Entities.BaseEntities;
 
 namespace CMS.Systems.StockManagement.Entities.StockRoot
@@ -17,7 +18,9 @@ namespace CMS.Systems.StockManagement.Entities.StockRoot
         public string Colour { get; set; }
         public double RetailPrice { get; set; }
         public double CostPrice { get; set; }
+        [NotMapped]
         public List<Accessory> Accessories { get; set; }
+        [NotMapped]
         public List<VehicleStockImage> Images { get; set; }
 
 

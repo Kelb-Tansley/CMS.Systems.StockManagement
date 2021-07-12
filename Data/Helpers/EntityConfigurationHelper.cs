@@ -12,9 +12,9 @@ namespace CMS.Systems.StockManagement.Data.Helpers
         public static void ConfigureManyKeyBase<T>(ModelBuilder modelBuilder) where T : ManyKeyBase
         {
             //need to get table name here.
-            var tableName = GetTableName<T>();
+            //var tableName = GetTableName<T>();
 
-            modelBuilder.Entity<T>().Property(x => x.Id).HasColumnName(tableName + "Id").ValueGeneratedOnAdd();
+            //modelBuilder.Entity<T>().Property(x => x.Id).HasColumnName(tableName + "Id").ValueGeneratedOnAdd();
             modelBuilder.Entity<T>().Property(t => t.IsDeleted).HasDefaultValue(false);
             modelBuilder.Entity<T>().Property(t => t.CreatedDate).HasDefaultValue(DateTime.Now);
             modelBuilder.Entity<T>().Property(t => t.ModifiedDate).HasDefaultValue(DateTime.Now);

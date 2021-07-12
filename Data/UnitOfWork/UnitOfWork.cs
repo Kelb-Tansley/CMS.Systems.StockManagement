@@ -9,7 +9,10 @@ namespace CMS.Systems.StockManagement.Data.UnitOfWork
     {
         private readonly ApplicationDbContext _context;
         private bool _disposed;
+
         private GenericRepository<VehicleStock> _vehicleStockRepository;
+        private GenericRepository<Accessory> _accessoryRepository;
+        private GenericRepository<VehicleStockAccessory> _vehicleStockAccessoryRepository;
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -23,7 +26,21 @@ namespace CMS.Systems.StockManagement.Data.UnitOfWork
                 return _vehicleStockRepository ??= new GenericRepository<VehicleStock>(_context);
             }
         }
-        
+        public IGenericRepository<VehicleStockAccessory> VehicleStockAccessoryRepository
+        {
+            get
+            {
+                return _vehicleStockAccessoryRepository ??= new GenericRepository<VehicleStockAccessory>(_context);
+            }
+        }
+        public IGenericRepository<Accessory> AccessoryRepository
+        {
+            get
+            {
+                return _accessoryRepository ??= new GenericRepository<Accessory>(_context);
+            }
+        }
+
         public void Save()
         {
             _context.SaveChanges();

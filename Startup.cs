@@ -38,7 +38,7 @@ namespace CMS.Systems.StockManagement
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddNewtonsoftJson();
             services.AddRazorPages();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -104,6 +104,12 @@ namespace CMS.Systems.StockManagement
                     spa.UseAngularCliServer(npmScript: "start");
                 }
             });
+
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                using (var context = scope.ServiceProvider.GetService<ApplicationDbContext>())
+                    context.Database.Migrate();
+            }
         }
     }
 }

@@ -68,8 +68,9 @@ export class StockComponent implements OnInit, OnDestroy {
     if (stock && this.dataSource) {
       let endPoint = this.baseUrl + 'vehiclestock';
       this.paramsSubscription = this.http.post<VehicleStockItem>(endPoint, stock).subscribe(result => {
-        this.dataSource.data.push(stock);
-        this.dataSource._updateChangeSubscription();
+        //this.dataSource.data.push(result);
+        stock = result;
+        //this.dataSource._updateChangeSubscription();
         this.isDrawerOpened = false;
       }, error => console.error(error));
     }

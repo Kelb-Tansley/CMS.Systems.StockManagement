@@ -37,6 +37,12 @@ namespace CMS.Systems.StockManagement.Data.Repository
             _context.Entry(entity).State = EntityState.Modified;
         }
 
+        public virtual void UpdateRange(IEnumerable<T> entity)
+        {
+            _dbSet.AttachRange(entity);
+            _context.Entry(entity).State = EntityState.Modified;
+        }
+
 
         public void Remove(T entity)
         {
@@ -51,7 +57,7 @@ namespace CMS.Systems.StockManagement.Data.Repository
             if (filter != null)
                 query = query.Where(filter);
 
-            query = includeProperties.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries)
+            query = includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                 .Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
 
             if (orderBy != null)
@@ -59,7 +65,21 @@ namespace CMS.Systems.StockManagement.Data.Repository
 
             return await query.ToListAsync();
         }
+        public virtual async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> filter = null, bool asNoTracking = false)
+        {
+            if (asNoTracking)
+            {
+                if (filter != null)
+                    return await _dbSet.AsNoTracking().FirstOrDefaultAsync(filter);
 
+                return await _dbSet.AsNoTracking().FirstOrDefaultAsync();
+            }
+
+            if (filter != null)
+                return await _dbSet.FirstOrDefaultAsync(filter);
+
+            return await _dbSet.FirstOrDefaultAsync();
+        }
         public async Task<List<T>> GetAllAsync(bool shouldTrackChanges = true)
         {
             if (shouldTrackChanges)

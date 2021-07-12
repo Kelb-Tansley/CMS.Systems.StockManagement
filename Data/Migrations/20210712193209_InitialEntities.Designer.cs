@@ -4,14 +4,16 @@ using CMS.Systems.StockManagement.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CMS.Systems.StockManagement.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210712193209_InitialEntities")]
+    partial class InitialEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,7 +32,7 @@ namespace CMS.Systems.StockManagement.Data.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 7, 13, 0, 1, 53, 866, DateTimeKind.Local).AddTicks(3540));
+                        .HasDefaultValue(new DateTime(2021, 7, 12, 21, 32, 9, 74, DateTimeKind.Local).AddTicks(2712));
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -43,12 +45,17 @@ namespace CMS.Systems.StockManagement.Data.Migrations
                     b.Property<DateTime>("ModifiedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 7, 13, 0, 1, 53, 867, DateTimeKind.Local).AddTicks(9767));
+                        .HasDefaultValue(new DateTime(2021, 7, 12, 21, 32, 9, 75, DateTimeKind.Local).AddTicks(5874));
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("VehicleStockId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("VehicleStockId");
 
                     b.ToTable("Accessories");
                 });
@@ -73,7 +80,7 @@ namespace CMS.Systems.StockManagement.Data.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 7, 13, 0, 1, 53, 868, DateTimeKind.Local).AddTicks(7768));
+                        .HasDefaultValue(new DateTime(2021, 7, 12, 21, 32, 9, 75, DateTimeKind.Local).AddTicks(9870));
 
                     b.Property<double>("CurrentKilometreReading")
                         .HasColumnType("float");
@@ -95,7 +102,7 @@ namespace CMS.Systems.StockManagement.Data.Migrations
                     b.Property<DateTime>("ModifiedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 7, 13, 0, 1, 53, 868, DateTimeKind.Local).AddTicks(8374));
+                        .HasDefaultValue(new DateTime(2021, 7, 12, 21, 32, 9, 76, DateTimeKind.Local).AddTicks(176));
 
                     b.Property<string>("RegistrationNumber")
                         .HasColumnType("nvarchar(max)");
@@ -122,7 +129,13 @@ namespace CMS.Systems.StockManagement.Data.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 7, 13, 0, 1, 53, 870, DateTimeKind.Local).AddTicks(9469));
+                        .HasDefaultValue(new DateTime(2021, 7, 12, 21, 32, 9, 77, DateTimeKind.Local).AddTicks(5405));
+
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("VehicleStockAccessoryId")
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -132,7 +145,7 @@ namespace CMS.Systems.StockManagement.Data.Migrations
                     b.Property<DateTime>("ModifiedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 7, 13, 0, 1, 53, 870, DateTimeKind.Local).AddTicks(9844));
+                        .HasDefaultValue(new DateTime(2021, 7, 12, 21, 32, 9, 77, DateTimeKind.Local).AddTicks(5712));
 
                     b.HasKey("AccessoryId", "VehicleStockId");
 
@@ -150,7 +163,7 @@ namespace CMS.Systems.StockManagement.Data.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 7, 13, 0, 1, 53, 869, DateTimeKind.Local).AddTicks(4515));
+                        .HasDefaultValue(new DateTime(2021, 7, 12, 21, 32, 9, 76, DateTimeKind.Local).AddTicks(3384));
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -160,7 +173,7 @@ namespace CMS.Systems.StockManagement.Data.Migrations
                     b.Property<DateTime>("ModifiedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 7, 13, 0, 1, 53, 869, DateTimeKind.Local).AddTicks(5043));
+                        .HasDefaultValue(new DateTime(2021, 7, 12, 21, 32, 9, 76, DateTimeKind.Local).AddTicks(3737));
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -172,6 +185,8 @@ namespace CMS.Systems.StockManagement.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("VehicleStockId");
 
                     b.ToTable("VehicleStockImages");
                 });
@@ -456,6 +471,22 @@ namespace CMS.Systems.StockManagement.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("CMS.Systems.StockManagement.Entities.StockRoot.Accessory", b =>
+                {
+                    b.HasOne("CMS.Systems.StockManagement.Entities.StockRoot.VehicleStock", null)
+                        .WithMany("Accessories")
+                        .HasForeignKey("VehicleStockId");
+                });
+
+            modelBuilder.Entity("CMS.Systems.StockManagement.Entities.StockRoot.VehicleStockImage", b =>
+                {
+                    b.HasOne("CMS.Systems.StockManagement.Entities.StockRoot.VehicleStock", null)
+                        .WithMany("Images")
+                        .HasForeignKey("VehicleStockId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
