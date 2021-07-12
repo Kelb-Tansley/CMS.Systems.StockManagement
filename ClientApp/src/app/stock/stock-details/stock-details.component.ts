@@ -13,7 +13,7 @@ import { EmitEvent, EventBusService, Events } from 'src/app/services/event-bus.s
 })
 
 export class StockDetailsComponent implements OnInit, OnDestroy {
-  @ViewChild('stockDetailsForm', { static: true }) stockDetailForm: NgForm;
+  @ViewChild('stockDetailsForm', { static: false }) stockDetailForm: NgForm;
   eventbusSubscription: Subscription;
   paramsSubscription: Subscription;
 
@@ -83,6 +83,10 @@ export class StockDetailsComponent implements OnInit, OnDestroy {
     console.log(this.stockDetailForm);
     console.log(this.stockItem);
     this.eventbus.emit(new EmitEvent(Events.StockSubmitted, this.stockItem));
+  }
+
+  onCancel() {
+    this.eventbus.emit(new EmitEvent(Events.StockCancelled, null));
   }
 
 

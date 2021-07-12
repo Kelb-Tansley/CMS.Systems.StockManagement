@@ -8,7 +8,7 @@
         <button mat-button type="submit" (click)="onSubmit()" [disabled]="!stockDetailsForm.valid">SUBMIT</button>
       </div>
       <div class="col">
-        <button mat-button>DELETE</button>
+        <button mat-button (click)="onCancel()">CANCEL</button>
       </div>
     </div>
     <br />
@@ -16,14 +16,14 @@
       <div class="col-sm-8 col-md-6">
         <div class="row">
           <mat-form-field class="form-full-width">
-            <input required matInput [(ngModel)]="stockItem.registrationNumber" [ngModelOptions]="{standalone: true}"
+            <input required matInput [(ngModel)]="stockItem.registrationNumber" name="regNum"
               placeholder="Registration Number">
             <mat-error *ngIf="entry.invalid">{{getErrorMessage()}}</mat-error>
           </mat-form-field>
         </div>
         <div class="row">
           <mat-form-field class="form-full-width">
-            <input matInput [(ngModel)]="stockItem.vinNumber" [ngModelOptions]="{standalone: true}"
+            <input required matInput [(ngModel)]="stockItem.vinNumber" name="vinNum"
               placeholder="Vehicle Identification Number" value="VIN Number">
           </mat-form-field>
         </div>

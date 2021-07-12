@@ -1,5 +1,4 @@
 <mat-drawer-container class="drawer-container" hasBackdrop="true" (backdropClick)="close('backdrop')">
-
   <div class="container-fluid">
     <div class="container-fluid">
       <div class="row">
@@ -89,7 +88,7 @@
     </div>
   </div>
 
-  <mat-drawer #drawer class="example-sidenav" mode="over" [(opened)]="isDrawerOpened">
+  <mat-drawer #drawer class="example-sidenav" mode="over" [(opened)]="isDrawerOpened" position="end">
     <div class="container-fluid">
       <app-stock-details stock="selectedItem"></app-stock-details>
     </div>

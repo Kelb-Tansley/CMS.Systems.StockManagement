@@ -8,5 +8,6 @@ namespace CMS.Systems.StockManagement.Interfaces
     {
         IEnumerable<VehicleStock> GetAllVehiclesAsync();
         Task<IList<VehicleStock>> GetAllVehiclesByUserNameAsync(string userName);
+        Task<VehicleStock> SaveVehicleStock(VehicleStock vehicleStock);
     }
 }

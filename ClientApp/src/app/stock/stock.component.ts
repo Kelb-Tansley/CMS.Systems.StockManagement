@@ -4,9 +4,11 @@ import { MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatSort } from '@angular/material/sort';
 import { VehicleStockItem } from '../models/vehicleStockItem';
-import { HttpClient } from '@angular/common/http';
-import { Subscription } from "rxjs";
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, Subscription } from "rxjs";
 import { EmitEvent, EventBusService, Events } from '../services/event-bus.service';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 @Component({
   selector: 'app-stock',
@@ -22,6 +24,7 @@ export class StockComponent implements OnInit, OnDestroy {
   isDrawerOpened = false;
 
   eventbusSubscription: Subscription;
+  stockCancelledSubscription: Subscription;
 
   displayedColumns: string[] = ['select', 'id', 'registrationNumber', 'manufacturer', 'modelDescription', 'modelYear', 'edit'];
   dataSource: MatTableDataSource<VehicleStockItem>;
@@ -45,6 +48,7 @@ export class StockComponent implements OnInit, OnDestroy {
     this.selectedItem = new VehicleStockItem();
 
     this.eventbusSubscription = this.eventbus.on(Events.StockSubmitted, (stock => this.onStockSubmittedEvent(stock)));
+    this.stockCancelledSubscription = this.eventbus.on(Events.StockCancelled, (() => this.onStockCancelledEvent()));
 
     this.paramsSubscription = this.http.get<VehicleStockItem[]>(endPoint).subscribe(result => {
       this.vehicleStockData = result;
@@ -55,18 +59,51 @@ export class StockComponent implements OnInit, OnDestroy {
     }, error => console.error(error));
   }
 
+
+  onStockCancelledEvent() {
+    this.isDrawerOpened = false;
+  }
+
   onStockSubmittedEvent(stock: VehicleStockItem) {
     if (stock && this.dataSource) {
-      this.dataSource.data.push(stock);
-      this.dataSource._updateChangeSubscription();
-      this.isDrawerOpened = false;
+      let endPoint = this.baseUrl + 'vehiclestock';
+      this.paramsSubscription = this.http.post<VehicleStockItem>(endPoint, stock).subscribe(result => {
+        this.dataSource.data.push(stock);
+        this.dataSource._updateChangeSubscription();
+        this.isDrawerOpened = false;
+      }, error => console.error(error));
     }
   }
 
+  addOrUpdateVehicleStockItem(vehicleStockItem: VehicleStockItem): Observable<VehicleStockItem> {
+    let endPoint = this.baseUrl + 'vehiclestock';
+    return this.http.post<VehicleStockItem>(endPoint, vehicleStockItem);
+  }
+
+  // handleError(arg0: string, vehicleStockItem: VehicleStockItem): (err: any, caught: Observable<any>) => import("rxjs").ObservableInput<any> {
+  //   throw new Error('Method not implemented.');
+  // }
+  private handleError(error: HttpErrorResponse) {
+    if (error.status === 0) {
+      // A client-side or network error occurred. Handle it accordingly.
+      console.error('An error occurred:', error.error);
+    } else {
+      // The backend returned an unsuccessful response code.
+      // The response body may contain clues as to what went wrong.
+      console.error(
+        `Backend returned code ${error.status}, body was: `, error.error);
+    }
+    // Return an observable with a user-facing error message.
+    return throwError(
+      'Something bad happened; please try again later.');
+  }
   ngOnDestroy() {
     this.paramsSubscription.unsubscribe();
     if (this.eventbusSubscription) {
       this.eventbusSubscription.unsubscribe();
+    }
+    if (this.stockCancelledSubscription) {
+      this.stockCancelledSubscription.unsubscribe();
     }
   }
   //#endregion

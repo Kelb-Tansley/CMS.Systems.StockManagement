@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CMS.Systems.StockManagement.Entities.StockRoot;
 using CMS.Systems.StockManagement.Interfaces;
@@ -23,6 +24,30 @@ namespace CMS.Systems.StockManagement.Services
         public async Task<IList<VehicleStock>> GetAllVehiclesByUserNameAsync(string userName)
         {
             return await _unitOfWork.VehicleStockRepository.GetAsync(vsr=> !vsr.IsDeleted && EF.Functions.Like(userName,vsr.CreatedBy));
+        }
+
+        public async Task<VehicleStock> SaveVehicleStock(VehicleStock vehicleStock)
+        {
+            if (vehicleStock == null)
+                return vehicleStock;
+            try
+            {
+                if (vehicleStock.Id == 0)
+                {
+                    await _unitOfWork.VehicleStockRepository.AddAsync(vehicleStock);
+                    _unitOfWork.Save();
+                }
+                else
+                {
+                    _unitOfWork.VehicleStockRepository.Update(vehicleStock);
+                    _unitOfWork.Save();
+                }
+                return vehicleStock;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

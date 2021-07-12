@@ -13,17 +13,30 @@ namespace CMS.Systems.StockManagement.Data.Repository
     {
         #region Fields
         private protected readonly DbSet<T> _dbSet;
-        #endregion 
+        private readonly DbContext _context;
+        #endregion
 
         public GenericRepository(DbContext context)
         {
             _dbSet = context.Set<T>();
+            _context = context;
         }
 
         public void Add(T entity)
         {
             _dbSet.Add(entity);
         }
+        public async Task AddAsync(T entity)
+        {
+            await _dbSet.AddAsync(entity);
+        }
+
+        public virtual void Update(T entity)
+        {
+            _dbSet.Attach(entity);
+            _context.Entry(entity).State = EntityState.Modified;
+        }
+
 
         public void Remove(T entity)
         {
