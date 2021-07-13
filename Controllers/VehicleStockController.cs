@@ -2,12 +2,13 @@
 using System.Threading.Tasks;
 using CMS.Systems.StockManagement.Entities.StockRoot;
 using CMS.Systems.StockManagement.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace CMS.Systems.StockManagement.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class VehicleStockController : ControllerBase
@@ -22,9 +23,9 @@ namespace CMS.Systems.StockManagement.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<VehicleStock> Get()
+        public async Task<IEnumerable<VehicleStock>> Get()
         {
-            return _vehicleStockService.GetAllVehiclesAsync();
+            return await _vehicleStockService.GetAllVehiclesAsync();
         }
         [HttpPost]
         public async Task<VehicleStock> Post(VehicleStock vehicleStock)

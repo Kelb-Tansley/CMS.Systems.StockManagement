@@ -6,7 +6,7 @@ namespace CMS.Systems.StockManagement.Interfaces
 {
     public interface IVehicleStockService
     {
-        IEnumerable<VehicleStock> GetAllVehiclesAsync();
+        Task<IEnumerable<VehicleStock>> GetAllVehiclesAsync();
         Task<IList<VehicleStock>> GetAllVehiclesByUserNameAsync(string userName);
         Task<VehicleStock> SaveVehicleStock(VehicleStock vehicleStock);
     }

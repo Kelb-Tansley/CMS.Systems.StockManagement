@@ -18,10 +18,23 @@ namespace CMS.Systems.StockManagement.Services
         }
 
         #region Interface Methods
-        public IEnumerable<VehicleStock> GetAllVehiclesAsync()
+        public async Task<IEnumerable<VehicleStock>> GetAllVehiclesAsync()
         {
-            //var collection = await _unitOfWork.VehicleStockRepository.GetAllAsync();
-            return VehicleStock.GetTestData();
+            var vehicleStocks = await _unitOfWork.VehicleStockRepository.GetAsync(vs => !vs.IsDeleted);
+
+            foreach (var vehicleStock in vehicleStocks)
+            {
+                var vehicleStockAccessories = await _unitOfWork.VehicleStockAccessoryRepository.GetAsync(v => !v.IsDeleted && v.VehicleStockId == vehicleStock.Id);
+
+                vehicleStock.Accessories = new List<Accessory>();
+                foreach (var vehicleStockAccessory in vehicleStockAccessories)
+                    vehicleStock.Accessories.Add(await _unitOfWork.AccessoryRepository.FirstOrDefaultAsync(a => !a.IsDeleted && a.Id == vehicleStockAccessory.AccessoryId));
+            }
+
+            if (vehicleStocks == null || !vehicleStocks.Any())
+                return VehicleStock.GetTestData();
+
+            return vehicleStocks;
         }
 
         public async Task<IList<VehicleStock>> GetAllVehiclesByUserNameAsync(string userName)

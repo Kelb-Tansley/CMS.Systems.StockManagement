@@ -21,10 +21,10 @@ import { MaterialModule } from './material-module';
 import { EventBusService } from './services/event-bus.service';
 
 const appRoutes: Routes = [
-  { path: '', component: HomeComponent, pathMatch: 'full' },
-  { path: 'counter', component: CounterComponent },
-  { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthorizeGuard] },
-  { path: 'stock', component: StockComponent }
+  // { path: '', component: HomeComponent, pathMatch: 'full' },
+  { path: '', component: StockComponent, canActivate: [AuthorizeGuard] },
+  { path: 'counter', component: CounterComponent, canActivate: [AuthorizeGuard] },
+  { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthorizeGuard] }
   // { path: 'stock-details', component: StockDetailsComponent, data: VehicleStockItem }
 ]
 
